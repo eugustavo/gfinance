@@ -1,6 +1,7 @@
 import { Box, FlatList, Heading, HStack, Text, VStack } from "native-base";
 import { UserPlus, Calendar, PlusCircle, ChevronRight } from 'lucide-react-native';
 import { TouchableOpacity } from "react-native";
+import { useCallback } from "react";
 
 const transactions = [
   {
@@ -42,8 +43,32 @@ const transactions = [
 ];
 
 export function Home() {
+  const amountFormatted = useCallback((type: string, amount: number) => {
+    if (type === 'outcome') {
+      return (
+        <Text
+          color="withdraw"
+          fontSize={18}
+          fontFamily="Poppins_500Medium"
+        >
+          -R${amount}
+        </Text>
+      )
+    }
+
+    return (
+      <Text
+        color="deposit"
+        fontSize={18}
+        fontFamily="Poppins_500Medium"
+      >
+        R${amount}
+      </Text>
+    )
+  }, [])
+
   return (
-    <Box flex={1} paddingX={4} pt={16} bg="background">
+    <Box flex={1} paddingX={4} pt={20} bg="background">
       <HStack alignItems="center" justifyContent="space-between">
         <VStack>
           <Text 
@@ -180,13 +205,7 @@ export function Home() {
               </VStack>
 
               <VStack alignItems="flex-end">
-                <Text
-                  color={item.type === 'income' ? 'deposit' : '"withdraw"'}
-                  fontSize={18}
-                  fontFamily="Poppins_500Medium"
-                >
-                  {item.type === 'outcome' &&'-'}R${item.amount}
-                </Text>
+                {amountFormatted(item.type, item.amount)}
 
                 <Text
                   color="primary.700"
